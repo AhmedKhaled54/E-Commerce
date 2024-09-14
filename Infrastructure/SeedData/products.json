@@ -1,0 +1,146 @@
+[
+  {
+    "Name": "ASUS Vivobook S15 K5504VA-MA007W",
+    "Description": "ASUS Vivobook S15 with 15.6-inch display, Intel Core i7, 16GB RAM, and 512GB SSD.",
+    "Price": 37499,
+    "Image": "Images/Products/asus-vivobook-s15-s5507qa-snapdragon-x1e-78-100-32gb-1tb-qualcomm-adreno-w11-laptop-2.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 1,
+    "productType_Id": 1
+
+  },
+  {
+    "Name": "Dell Vostro 3520 i3-1215U",
+    "Description": "Dell Vostro 3520 with 15.6-inch display, Intel Core i3, 8GB RAM, and 256GB SSD.",
+    "Price": 16000,
+    "Image": "Images/Products/71+-viLETIL._AC_UF350,350_QL80_.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 2,
+    "productType_Id": 1
+
+  },
+  {
+    "Name": "ASUS TUF Gaming A15 FA506NF-HN005W",
+    "Description": "ASUS TUF Gaming A15 with 15.6-inch display, AMD Ryzen 7, 16GB RAM, and 512GB SSD.",
+    "Price": 31450,
+    "Image": "Images/Products/612K8AxGIEL._AC_UF894,1000_QL80_.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 1,
+    "productType_Id": 2
+
+  },
+  {
+    "Name": "HP 15-fc0036ne Ryzen 7-7730U",
+    "Description": "HP 15 with 15.6-inch display, AMD Ryzen 7, 16GB RAM, and 512GB SSD.",
+    "Price": 34999,
+    "Image": "Images/Products/c08596363.png",
+    "CategoryId": 3,
+    "Productbrand_Id": 3,
+    "productType_Id": 3
+
+  },
+  {
+    "Name": "Lenovo IdeaPad 1 15IGL7",
+    "Description": "Lenovo IdeaPad 1 with 15.6-inch display, Intel Celeron, 4GB RAM, and 128GB SSD.",
+    "Price": 10777,
+    "Image": "Images/Products/IdeaPad-1-15IGL7-Cloud-Greya.png",
+    "CategoryId": 3,
+    "Productbrand_Id": 4,
+    "productType_Id": 1
+
+  },
+  {
+    "Name": "Dell XPS 17-9710",
+    "Description": "Dell XPS 17 with 17-inch display, Intel Core i7, 32GB RAM, and 1TB SSD.",
+    "Price": 130000,
+    "Image": "Images/Products/61DtVa4h3mL._AC_UF894,1000_QL80_.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 2,
+    "productType_Id": 1
+
+  },
+  {
+    "Name": "ASUS TUF Gaming F15 2023 FX507VV",
+    "Description": "ASUS TUF Gaming F15 with 15.6-inch display, Intel Core i7, 16GB RAM, and 1TB SSD.",
+    "Price": 59999,
+    "Image": "Images/Products/FX507V-U4LP030W-5-550x550w.png",
+    "CategoryId": 3,
+    "Productbrand_Id": 1,
+    "productType_Id": 2
+
+  },
+  {
+    "Name": "HP Pavilion 15-eh3001ne", 
+    "Description": "HP Pavilion 15 with 15.6-inch display, AMD Ryzen 5, 8GB RAM, and 512GB SSD.",
+    "Price": 32999,
+    "Image": "Images/Products/hp-pavilion-15-eg3045cl-7x6p2ua-156-full-hd-touchscreen-laptop-blue-pad-numerico.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 3,
+    "productType_Id": 1
+  },
+  {
+    "Name": "Lenovo Legion 5 Gaming Laptop",
+    "Description": "Lenovo Legion 5 with 15.6-inch display, AMD Ryzen 7, 16GB RAM, and 512GB SSD.",
+    "Price": 40159,
+    "Image": "Images/Products/61k18DOFsBL._AC_UF894,1000_QL80_.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 4,
+    "productType_Id": 2
+
+  },
+  {
+    "Name": "Huawei MateBook D15", 
+    "Description": "Huawei MateBook D15 with 15.6-inch display, Intel Core i5, 8GB RAM, and 256GB SSD.",
+    "Price": 18199,
+    "Image": "Images/Products/img_share.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 5,
+    "productType_Id": 1
+  },
+  {
+    "Name": "Apple MacBook Pro 16 inch",
+    "Description": "Apple MacBook Pro with 16-inch display, M1 Pro chip, 16GB RAM, and 512GB SSD.",
+    "Price": 104999,
+    "Image": "Images/Products/hero_intro_endframe__e6khcva4hkeq_large.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 6,
+    "productType_Id": 1
+  },
+  {
+    "Name": "Dell Latitude 3520",
+    "Description": "Dell Latitude 3520 with 15.6-inch display, Intel Core i5, 8GB RAM, and 256GB SSD.",
+    "Price": 43670,
+    "Image": "Images/Products/Dell-Latitude-3520.png",
+    "CategoryId": 3,
+    "Productbrand_Id": 2,
+    "productType_Id": 1
+  },
+  {
+    "Name": "HP Spectre x360",
+    "Description": "HP Spectre x360 with 13.3-inch display, Intel Core i7, 16GB RAM, and 512GB SSD.",
+    "Price": 58500,
+    "Image": "Images/Products/HPspectre_x360_14_ea0000_chara3.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 3,
+    "productType_Id": 3
+  },
+  {
+    "Name": "ASUS ZenBook 14 UX425EA",
+    "Description": "ASUS ZenBook 14 with 14-inch display, Intel Core i5, 8GB RAM, and 512GB SSD.",
+    "Price": 19999,
+    "Image": "Images/Products/UX3402ZA-OLED007W-03.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 1,
+    "productType_Id": 4
+  },
+  {
+    "Name": "Lenovo Yoga Slim 7i",
+    "Description": "Lenovo Yoga Slim 7i with 14-inch display, Intel Core i7, 16GB RAM, and 512GB SSD.",
+    "Price": 24499,
+    "Image": "Images/Products/laptop_yoga_slim_7.jpg",
+    "CategoryId": 3,
+    "Productbrand_Id": 4,
+    "productType_Id": 4
+  }
+  
+]
