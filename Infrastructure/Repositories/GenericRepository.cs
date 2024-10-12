@@ -43,6 +43,28 @@ namespace Infrastructure.Repositories
         public async Task<T> GetEntityWithSpecs(ISpecification<T> specification)
             => await Apply(specification).FirstOrDefaultAsync();
 
+       public async  Task<IEnumerable<T>> GetAllPredicated(Expression<Func<T, bool>> match, string[] include = null!)
+        {
+            IQueryable<T> query = context.Set<T>();
+            if (query == null)
+                return null;
+            if (include != null)
+                foreach(var incldes in include )
+                    query = query.Include(incldes);
+            return await query.Where(match).ToListAsync();
+       }
+        public T GetEntityPredicated(Expression<Func<T, bool>> match, string[] include = null!)
+        {
+            IQueryable<T> query = context.Set<T>();
+            if (query == null)
+                return null;
+            if (include != null)
+                foreach (var incldes in include )
+                    query = query.Include(incldes);
+            return query.FirstOrDefault(match);
+        }
+
+
         public async Task<int> GetCount(ISpecification<T> specification)
             =>await Apply(specification).CountAsync();
         private  IQueryable<T> Apply(ISpecification<T> specification)
@@ -50,5 +72,7 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> IsValid(int id)
             =>await context.Set<T>().AnyAsync(c=>c.Id==id);
+
+      
     }
 }

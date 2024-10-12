@@ -2,7 +2,12 @@ using Core.Data;
 using E_Commerce.Confiquration;
 using E_Commerce.Helper;
 using E_Commerce.MiddleWare;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Services.Helper;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +27,13 @@ builder.Services.AddDbContext<AppDBContext>(c =>
     c.UseSqlServer(connection);
 });
 
+//Add RedisCaching
+builder.Services.AddSingleton<IConnectionMultiplexer>(r =>
+{
+    var connection=ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("redis"),true);
+    return ConnectionMultiplexer.Connect(connection);
+});
+builder.Services.Configure<Emails>(builder.Configuration.GetSection("MailSetting"));
 
 
 builder.Services.AddServices();

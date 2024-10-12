@@ -22,5 +22,6 @@ namespace Core.Entity
         public virtual ProductBrand ProductBrand { get; set; }  
         public virtual ProductType  ProductType { get; set; }   
         public virtual Category Category { get; set; }      
+        public List<Rate>? Rate { get; set; }
     }
 }

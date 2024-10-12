@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Services.Dtos.OrderDto;
 using Services.Dtos.Response;
 using Services.HandleResponse;
@@ -108,7 +109,24 @@ namespace Services.Services.OrderServices
             
         }
 
+        public async Task<ResponseDto> GetOrder()
+        { 
+            var user = GetUserId();
+            var Order = unitOf.Repository<Order>()
+                .GetEntityPredicated(u => u.UserId == user, new[] {"OrderItems"});
+            var Orderitems = await unitOf.Repository<OrderItem>().GetAllPredicated(c => c.OrderId == Order.Id, new[] {"Product"});
+            var Address = mapper.Map<ShippingAddress>(Order.ShippingAddress);
+            var OrderItems=mapper.Map<List<OrderItemDto>>(Orderitems);
+            var OrderResult = mapper.Map<OrderResult>(Order);
+            OrderResult.Items=OrderItems;
 
+            return new ResponseDto
+            {
+                Status = 200,
+                IsSucceeded = true,
+                Model = OrderResult,
+            };
+        }
 
         private  string GetUserId()
         {
@@ -118,12 +136,33 @@ namespace Services.Services.OrderServices
         }
 
 
+
         private async Task<Cart> GetCartSpecs()
         {
             var specification = new CartSpecification();
             var specs=new CartWithCartItemSpecification(specification);
             var cart=await unitOf.Repository<Cart>().GetEntityWithSpecs(specs);
             return cart;
+        }
+
+        public async Task<ResponseDto> CancelOrder(int OrderNumber)
+        {
+            var response = new ResponseDto();
+            var user = GetUserId();
+            var order=await unitOf.Repository<Order>().FindAsync(o=>o.UserId== user&&o.Id==OrderNumber);
+            if ( order==null)
+            {
+                response.Status = 400;
+                response.Message = "The OrderNumber is Invalid! ";
+                return response;
+                
+            }
+
+            unitOf.Repository<Order>().Delete(order);
+            await unitOf.Complete();
+            response.IsSucceeded = true;
+            response.Message = "Order Cancelled Successfully";
+            return response;
         }
     }
 }

@@ -1,13 +1,23 @@
-﻿using Core.Entity;
+﻿using AutoMapper;
+using Core.Entity;
+using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Dtos.AuthDtos;
+using Services.Dtos.EmailDtos;
+using Services.Dtos.Response;
+using Services.Dtos.UserDto;
+using Services.Dtos.WishListDto;
+using Services.EmailServices;
 using Services.HandleResponse;
 using Services.Helper;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -23,11 +33,24 @@ namespace Services.Services.AuthServices
     {
         private readonly UserManager<User> userManager;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IEmailServices emailServices;
+        private readonly IUnitOfWork _unitOf;
+        private readonly IMapper mapper;
         private readonly JWT JWT;
-        public AuthServices(UserManager<User> userManager,IOptions<JWT>_JWt,IHttpContextAccessor httpContextAccessor)
+        private static ConcurrentDictionary<string,string> OtpStorage = new ConcurrentDictionary<string,string>();
+        public AuthServices(UserManager<User> userManager,
+            IOptions<JWT>_JWt,
+            IHttpContextAccessor httpContextAccessor,
+            IEmailServices emailServices,
+            IUnitOfWork unitOf,
+            IMapper mapper
+            )
         {
             this.userManager = userManager;
             this.httpContextAccessor = httpContextAccessor;
+            this.emailServices = emailServices;
+            _unitOf = unitOf;
+            this.mapper = mapper;
             JWT =_JWt.Value;
         }
 
@@ -43,7 +66,8 @@ namespace Services.Services.AuthServices
             {
                 UserName = dto.UserName,
                 Email = dto.Email,
-                Address = dto.Address
+                Address = dto.Address,
+                TwoFactorEnabled=true
             };
 
             var result =await userManager.CreateAsync(user,dto.Password);
@@ -115,8 +139,8 @@ namespace Services.Services.AuthServices
             return authmodel;
         }
 
-      
-     
+       
+
         public async Task<AuthModel> RefreshToken(string token)
         {
             var authmodel=new AuthModel();
@@ -164,13 +188,21 @@ namespace Services.Services.AuthServices
         }
 
 
-        public async Task<User> GetCurrentuser()
+        public async Task<ResponseDto> GetCurrentuser()
         {
             var email =httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
+           //var user = await userManager.Users.FirstAsync(c => c.Email == email);
 
-            var user = await userManager.Users
-                .FirstAsync(c => c.Email == email);
-            return user;
+            var User =await userManager.Users
+                .Include(c=>c.wishLists).FirstOrDefaultAsync(e=>e.Email == email);
+            var wishlist =await  _unitOf.Repository<WishList>().GetAllPredicated(c => c.UserId == User.Id, new[] { "Product" });
+            var MapWishList=mapper.Map<List<WishListsDto>>(wishlist);
+            var MapUser=mapper.Map<UserProfileDto>(User);
+            return new ResponseDto
+            {
+                IsSucceeded = true,
+                Model=MapUser,
+            };
 
         }
         private async Task<JwtSecurityToken>Createtoken(User user)
@@ -224,9 +256,6 @@ namespace Services.Services.AuthServices
 
         }
 
-
-
-
         private RefreshToken GenerateRefreshToken()
         {
             var rendomNumber =new byte[32];
@@ -244,6 +273,142 @@ namespace Services.Services.AuthServices
 
         }
 
-       
+        public async Task<ResponseDto> ForegetPassword(ForgetPasswordDto dto)
+        {
+            var user =await userManager.FindByEmailAsync(dto.Email);
+            if (user != null)
+            {
+                var token =await userManager.GeneratePasswordResetTokenAsync(user);
+                var otpCode = GenerateOtpCode(6);
+
+
+
+                var email = new EmailDto
+                {
+                    ToEmail = dto.Email,
+                    Subject = "ForgetPassword",
+                    Body =$" IS Your OTP  Code:\a{otpCode}\a.Do Not Share it With anyone"
+                };
+                await emailServices.SendEmail(email);
+                OtpStorage[dto.Email]=otpCode;
+
+                return new ResponseDto
+                {
+                    Status = 200,
+                    IsSucceeded = true,
+                    Message = $"Password Change Request is send email <{user.Email}> ..please open your Email"
+                };
+            }
+
+            return new ResponseDto
+            {
+                Status = 400,
+                Message = " couldn't send email ,please try Again !"
+            };
+        }
+
+        public async  Task<ResponseDto> RessetPassword(RessetPasswordDto dto)
+        {
+            var response = new ResponseDto();
+            if (!OtpStorage.TryGetValue(dto.Email,out var otpstorage) || otpstorage != dto.Code)
+            {
+                response.Status = 400;
+                response.Message = "Invalid OtpCode Please Try Again!";
+                return response;
+            }
+
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user != null)
+            {
+                //hashPassword 
+                var hashPassword =userManager.PasswordHasher.HashPassword(user,dto.NewPassword);
+                user.PasswordHash = hashPassword;
+                await userManager.ChangePasswordAsync(user,user.PasswordHash,dto.NewPassword);
+                await userManager.UpdateAsync(user);
+                OtpStorage.TryRemove(dto.Email, out _);
+                response.IsSucceeded = true;
+                response.Status = 200;
+                response.Message = "Password has been changed successfully";
+                return response;
+            }
+            response.Status = 400;
+            response.Message = "Invalid User!";
+            return response;
+        }
+
+        public async Task<ResponseDto> EditProfile(EditProfileDto dto)
+        {
+            
+            var user = await GetUser();
+            if (user != null)
+            {
+                user.Email = dto.Email;
+                user.UserName=dto.Name;
+                user.Address = dto.Address;
+                await userManager.UpdateAsync(user);
+                return new ResponseDto
+                {
+                    IsSucceeded = true,
+                    Status = 200,
+                    Message = "Updated Data Successfuly"
+                };
+            }
+            return new ResponseDto
+            {
+                Status = 400,
+                Message = "Invalid User Please Try Again!"
+            };
+        }
+
+        public async Task<ResponseDto> ChangePassword(ChangePasswordDto dto)
+        {
+            var response = new ResponseDto();
+            var user= await GetUser();
+            if (user==null )
+            {
+                response.Message = "Invalid User";
+                response.Status = 400;
+                return response;
+
+            }
+            var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+            if (!result.Succeeded)
+            {
+                 var error=string.Empty;
+                foreach(var Errors in result.Errors)
+                {
+                    error += $"{Errors.Description},";
+                }
+                response.Message = error;
+                response.Status = 400;
+                return response;
+            }
+            response.IsSucceeded = true;
+            response.Message = "Password Changed Succesfuly";
+            response.Status = 200;
+            return response;
+        }
+        private string GenerateOtpCode(int lenth)
+        {
+            var random = new Random();
+            string Otp = string.Empty;
+            for (int r=0;r<lenth;r++)
+            {
+                Otp += random.Next(0, 10).ToString();
+                
+            }
+            return Otp;
+        }
+
+        
+        private async Task<User>GetUser()
+        {
+            ClaimsPrincipal  User = httpContextAccessor.HttpContext.User;
+            var userid=userManager.GetUserId(User);
+            var users= await userManager.Users.FirstOrDefaultAsync(x => x.Id==userid);
+            return users;
+        }
+
+        
     }
 }

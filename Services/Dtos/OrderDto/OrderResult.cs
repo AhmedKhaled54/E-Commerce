@@ -9,7 +9,7 @@ namespace Services.Dtos.OrderDto
 {
     public  class OrderResult
     {
-        public int Id { get; set; }
+        public int OrderNumber { get; set; }
         public string UserId { get; set; }
         public DateTime CreatedDate { get; set; }
         public IReadOnlyList<OrderItemDto> Items { get; set; }

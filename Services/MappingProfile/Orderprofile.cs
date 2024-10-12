@@ -18,6 +18,7 @@ namespace Services.MappingProfile
                .ReverseMap();
 
             CreateMap<Order,OrderResult>()
+                .ForMember(d=>d.OrderNumber,c=>c.MapFrom(s=>s.Id))
                 .ForMember(d=>d.SupTotal,c=>c.MapFrom(s=>s.Total));
 
             CreateMap<OrderItem, OrderItemDto>()

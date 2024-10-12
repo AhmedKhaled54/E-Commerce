@@ -13,7 +13,7 @@ namespace Infrastructure.SeedData
     public  class AppSedd
     {
         public static async Task SeedData (AppDBContext context,ILoggerFactory logger)
-        {
+         {
 			try
 			{
 				if (context.Categories!=null&&!context.Categories.Any())

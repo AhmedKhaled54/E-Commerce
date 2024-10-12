@@ -14,9 +14,13 @@ namespace Core.Entity
     {
         public string Address { get; set; } 
         public List<RefreshToken> RefreshTokens { get; set; }
-
+        public List<WishList>? wishLists { get; set; }
         public IEnumerable<Cart>? Carts { get; set; }
         public IEnumerable<Order>? Orders { get; set; }
+        public List<Rate> ?Rate { get; set; }   
+
+
+
         
 
     }

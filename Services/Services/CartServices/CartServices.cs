@@ -13,6 +13,7 @@ using Services.Dtos.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
@@ -104,8 +105,9 @@ namespace Services.Services.CartServices
             }
 
             var products = await unitOf.Repository<Product>().GetAll();
-            var cart = await GetCartspecs();
-          
+            //var cart = await GetCartspecs();
+
+            var cart =  unitOf.Repository<Cart>().GetEntityPredicated(c => c.UserId == user, new[] { "CartItems" });
             var MapCart=mapper.Map<CartDto>(cart);
             var cartitem = await GetCartItems();
             

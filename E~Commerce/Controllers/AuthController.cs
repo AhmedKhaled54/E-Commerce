@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Digests;
 using Services.Dtos.AuthDtos;
+using Services.Dtos.EmailDtos;
 using Services.HandleResponse;
 using Services.Services.AuthServices;
 using System.Linq.Expressions;
@@ -24,7 +27,7 @@ namespace E_Commerce.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
             var user=await authServices.GetCurrentuser();
-            return Ok(user);
+            return Ok(user.Model);
         }
 
 
@@ -78,6 +81,50 @@ namespace E_Commerce.Controllers
         }
 
 
+
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword([FromQuery] ForgetPasswordDto dto)
+        {
+            var auth = await authServices.ForegetPassword(dto);
+            if (!auth.IsSucceeded)
+                return BadRequest(new ApiResponse(auth.Status,auth.Message));
+            return Ok(new ApiResponse(auth.Status, auth.Message));
+        }
+        [HttpPost]
+        public async Task<IActionResult> RessetPassword([FromQuery]RessetPasswordDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var auth = await authServices.RessetPassword(dto);
+                if (!auth.IsSucceeded)
+                    return BadRequest(new ApiResponse(auth.Status, auth.Message));
+                return Ok(auth.Message);
+            }
+            return BadRequest(ModelState);
+        }
+
+
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult>EditProfile(EditProfileDto dto)
+        {
+            var user =await authServices.EditProfile(dto);
+            if (!user.IsSucceeded)
+                return BadRequest(new ApiResponse(user.Status, user.Message));
+            return BadRequest(user.Message);
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult>ChangePassword (ChangePasswordDto dto)
+        {
+            var auth=await authServices.ChangePassword(dto);
+            if (!auth.IsSucceeded)
+                return BadRequest(new ApiResponse(auth.Status, auth.Message));
+            return Ok(auth.Message);
+        }
         private void SetRefreshTokenInCookie(string refreshToken,DateTime time)
         {
             var cookie = new CookieOptions

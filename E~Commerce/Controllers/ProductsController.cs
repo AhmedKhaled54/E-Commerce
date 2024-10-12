@@ -1,4 +1,5 @@
-﻿using Infrastructure.Specifications.ProductSpecifications;
+﻿using E_Commerce.Helper;
+using Infrastructure.Specifications.ProductSpecifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
@@ -22,6 +23,7 @@ namespace E_Commerce.Controllers
         }
 
         [HttpGet]
+        [Cach(20)]
         public async Task<ActionResult<IEnumerable<ProductDto>>>GetAllproducts([FromQuery]ProductSpecification specs)
         {
             var products = await services.GetAllProduct(specs);
@@ -30,6 +32,7 @@ namespace E_Commerce.Controllers
 
         [SwaggerOperation(Summary = "{ List Of Product Using (Pagination) }")]
         [HttpGet]
+        [Cach(20)]
         public async Task<ActionResult<Pagination<ProductDto>>> GetProducts([FromQuery] ProductSpecification specification)
         {
             var products = await services.GetAllProductwithpagination(specification);

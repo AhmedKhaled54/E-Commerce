@@ -2,7 +2,10 @@
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services.Caching;
+using Services.EmailServices;
 using Services.HandleResponse;
+using Services.Helper;
 using Services.MappingProfile;
 using Services.Services.AuthServices;
 using Services.Services.BrandServices;
@@ -11,7 +14,10 @@ using Services.Services.CategoryServices;
 using Services.Services.OrderServices;
 using Services.Services.ProductServices;
 using Services.Services.ProductTypeServices;
+using Services.Services.RateServices;
 using Services.Services.RoleServices;
+using Services.Services.WishListServices;
+using StackExchange.Redis;
 using System.Data.SqlTypes;
 
 namespace E_Commerce.Confiquration
@@ -30,8 +36,10 @@ namespace E_Commerce.Confiquration
             services.AddTransient<ICategoryServices,CategoryServices>();
             services.AddTransient<ICartServices,CartServices>();
             services.AddTransient<IOrderServices,OrderServices>();
-           
-           
+            services.AddTransient<IWishListServices, WishListServices>();
+            services.AddTransient<ICachServices, CachServices>();
+            services.AddTransient<IEmailServices, EmailServices>();
+            services.AddTransient<IRateServices, RateServices>();
 
             #region mapping
             services.AddAutoMapper(typeof(Brandprofile));
@@ -40,6 +48,7 @@ namespace E_Commerce.Confiquration
             services.AddAutoMapper(typeof(CategoryProfile));
             services.AddAutoMapper(typeof(CartProfile));
             services.AddAutoMapper(typeof(Orderprofile));
+            services.AddAutoMapper(typeof(WishListProfile));
             #endregion
             
             services.Configure<ApiBehaviorOptions>(c =>

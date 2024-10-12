@@ -1,5 +1,6 @@
 ﻿using Core.Entity;
 using Infrastructure.Specifications;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace Infrastructure.Interfaces
 
         Task<T>FindAsync(Expression<Func<T, bool>> match);
         Task<IEnumerable<T>>GetAllEntityWithSpecs(ISpecification<T> specification);
+
+        Task<IEnumerable<T>>GetAllPredicated(Expression<Func<T, bool>> match, string[]include=null!);
+        T GetEntityPredicated(Expression<Func<T, bool>> match, string[] include = null!);
         Task<T>GetEntityWithSpecs(ISpecification<T> specification);
 
         Task<int> GetCount(ISpecification<T> specification);

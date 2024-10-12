@@ -11,5 +11,7 @@ namespace Services.Services.OrderServices
     public  interface IOrderServices
     {
         Task<ResponseDto>CreateOrder(OrderDto orderDto);
+        Task<ResponseDto>GetOrder();
+        Task<ResponseDto> CancelOrder(int OrderNumber);
     }
 }
