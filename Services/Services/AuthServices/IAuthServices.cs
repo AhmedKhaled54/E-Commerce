@@ -23,6 +23,7 @@ namespace Services.Services.AuthServices
         Task<ResponseDto> EditProfile(EditProfileDto dto);  
 
         Task<ResponseDto>ChangePassword(ChangePasswordDto dto);
+        Task<AuthModel> AddAdmin(RegisterDto dto);      
 
 
     }

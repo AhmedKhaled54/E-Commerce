@@ -388,6 +388,52 @@ namespace Services.Services.AuthServices
             response.Status = 200;
             return response;
         }
+
+        public async Task<AuthModel> AddAdmin(RegisterDto dto)
+        {
+            var user = await userManager.FindByNameAsync(dto.UserName);
+            if (user != null && await userManager.FindByEmailAsync(dto.Email) != null)
+                return new AuthModel { Message = "Email OR UserName Already  exists!" };
+            var admin = new User
+            {
+                UserName = dto.UserName,
+                Email = dto.Email,
+                Address = dto.Address,
+
+            };
+
+            var result =await userManager.CreateAsync(admin,dto.Password);
+            if (!result.Succeeded)
+            {
+                var message = string.Empty;
+                foreach (var Errors in result.Errors)
+                {
+                    message += $"{Errors.Description},";
+                }
+                return new AuthModel { Message = message };
+            }
+
+            var role =await userManager.AddToRoleAsync(admin, "Admin");
+
+            var token = await Createtoken(admin);
+            var refreashtoken = GenerateRefreshToken();
+            admin.RefreshTokens?.Add(refreashtoken);
+            await userManager.UpdateAsync(admin);
+
+            return new AuthModel
+            {
+                UserName = admin.UserName,
+                Email = admin.Email,
+                IsAuthenticated = true,
+                Roles = new List<string> { "Admin" },
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                RefreshTokenExpire = refreashtoken.ExpireOn,
+                RefreshToken = refreashtoken.Token,
+                Message = $"Welcome {admin.UserName}"
+
+            };
+
+        }
         private string GenerateOtpCode(int lenth)
         {
             var random = new Random();

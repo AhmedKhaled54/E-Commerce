@@ -53,6 +53,16 @@ namespace E_Commerce.Controllers
             return Ok(user);
 
         }
+        [HttpPost]
+        public async Task<IActionResult>AddAdmin(RegisterDto dto)
+        {
+            var admin=await authServices.AddAdmin(dto);
+            if (!admin.IsAuthenticated)
+                return BadRequest(new ApiResponse(400, admin.Message));
+            SetRefreshTokenInCookie(admin.RefreshToken,admin.RefreshTokenExpire);
+
+            return Ok(admin);
+        }
 
 
         [HttpGet]
