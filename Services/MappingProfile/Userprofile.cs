@@ -20,7 +20,14 @@ namespace Services.MappingProfile
                 .ForMember(d => d.Address, c => c.MapFrom(s => s.Address))
                 .ForMember(d => d.wishLists, c => c.MapFrom(s => s.wishLists))
                 .ReverseMap();
-                
+
+
+            CreateMap<User, UserDto>()
+                .ForMember(d => d.UserID, c => c.MapFrom(s => s.Id))
+                .ForMember(d => d.UserName, c => c.MapFrom(s => s.UserName))
+                .ForMember(d => d.Address, c => c.MapFrom(s => s.Address))
+                .ForMember(d => d.Email, c => c.MapFrom(s => s.Email))
+                .ReverseMap();
         }
     }
 }

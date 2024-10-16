@@ -16,6 +16,8 @@ using Services.Services.ProductServices;
 using Services.Services.ProductTypeServices;
 using Services.Services.RateServices;
 using Services.Services.RoleServices;
+using Services.Services.UserServices;
+using Services.Services.UserServices.UserServices;
 using Services.Services.WishListServices;
 using StackExchange.Redis;
 using System.Data.SqlTypes;
@@ -40,6 +42,7 @@ namespace E_Commerce.Confiquration
             services.AddTransient<ICachServices, CachServices>();
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddTransient<IRateServices, RateServices>();
+            services.AddTransient<IUserServices, UserService >();
 
             #region mapping
             services.AddAutoMapper(typeof(Brandprofile));
@@ -49,6 +52,8 @@ namespace E_Commerce.Confiquration
             services.AddAutoMapper(typeof(CartProfile));
             services.AddAutoMapper(typeof(Orderprofile));
             services.AddAutoMapper(typeof(WishListProfile));
+            services.AddAutoMapper(typeof(Userprofile));
+
             #endregion
             
             services.Configure<ApiBehaviorOptions>(c =>
