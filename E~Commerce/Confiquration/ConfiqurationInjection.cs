@@ -12,6 +12,7 @@ using Services.Services.BrandServices;
 using Services.Services.CartServices;
 using Services.Services.CategoryServices;
 using Services.Services.OrderServices;
+using Services.Services.Paymentservices;
 using Services.Services.ProductServices;
 using Services.Services.ProductTypeServices;
 using Services.Services.RateServices;
@@ -43,6 +44,7 @@ namespace E_Commerce.Confiquration
             services.AddTransient<IEmailServices, EmailServices>();
             services.AddTransient<IRateServices, RateServices>();
             services.AddTransient<IUserServices, UserService >();
+            services.AddTransient<IPaymentServices, PaymentServices>();
 
             #region mapping
             services.AddAutoMapper(typeof(Brandprofile));

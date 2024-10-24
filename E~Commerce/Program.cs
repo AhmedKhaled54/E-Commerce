@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Helper;
 using StackExchange.Redis;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,8 @@ builder.Services.Configure<Emails>(builder.Configuration.GetSection("MailSetting
 builder.Services.AddServices();
 builder.Services.AddJWTServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
 
 
 

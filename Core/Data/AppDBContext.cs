@@ -39,6 +39,7 @@ namespace Core.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<WishList> WishList { get; set; }   
         public DbSet<Rate> Rate { get; set; }
+        public DbSet<Payment> payments { get; set; }
 
     }
 }
